@@ -3,97 +3,76 @@ fs = require('fs')
 
 let trees=[];
 
-function iterateThroughMap(trees,treesBinary,row,col,columParse,rowParse){
-    //console.log("binary tree value: " + treesBinary[row][col]);
-   // console.log("row: " + row);
-    //console.log("col: " + col);
-    //console.log("prevValue: " + prevValue);
-    
+function findDirectionUp(trees,row,col){
+    let answer=0;
+    let max=trees[row][col];
+    for(let rowNum=row-1;rowNum>=0;rowNum--){
+        if (max<=trees[rowNum][col]){
+            answer++;
+            break;
+        } else {
+            answer++;
+        }
+    }
+    return answer;
+}
+function findDirectionDown(trees,row,col){
+    let answer=0;
+    let max=trees[row][col];
+    console.log(max);
+    for(let rowNum=row+1;rowNum<=trees.length-1;rowNum++){
+        console.log(trees[rowNum][col]);
+        if (max<=trees[rowNum][col]){
+            answer++;
+            break;
+        } else {
+            answer++;
+        }
+    }
+    return answer;
+}
+function findDirectionLeft(trees,row,col){
+    let answer =0;
+    let max=trees[row][col];
+    for(let colNum=col-1;colNum>=0;colNum--){
+        // console.log(trees[row][colNum]);
+        if (max<=trees[row][colNum]){
+            answer++;
+            break;
+        } else {
+            answer++;
+        }
+    }
+    return answer;
+}
+function findDirectionRight(trees,row,col){
+    let answer=0;
+    let max=trees[row][col];
+    for(let colNum=col+1;colNum<=trees[0].length-1;colNum++){
+        if (max<=trees[row][colNum]){
+            answer++;
+            break;
+        } else {
+            answer++;
+        }
+    }
+    return answer;
+}
 
-    if (row <trees.length && col < trees[0].length ){
-        if(!rowParse && columParse){
-            // find column value
-            // iterate through all value sin column 
-               
-                let maxValue=0;
-                //  top bottom
-                for(let rowNum=0;rowNum<trees.length;rowNum++){
-                   // console.log("Difference: "  );
-                   if(trees[rowNum][col] == 5){
-                    // console.log("RowCol: "+rowNum,col);
-                    // console.log("MaxValue: " + maxValue);
-                    // console.log("Binary: " + treesBinary[rowNum][col]);
-                    // console.log("tree Value: " + trees[rowNum][col]);
-                    // console.log("---------------------------------");
-                }
-                    //console.log("Value: " + trees[rowNum][col]);
-                    if (maxValue<trees[rowNum][col]){
-                       
-                        maxValue=Math.max(maxValue,trees[rowNum][col]);
-                        treesBinary[rowNum][col]=1;
-                    } else if (rowNum == 0){
-                        treesBinary[rowNum][col]=1;
-                        maxValue=trees[rowNum][col];
-                    }
-
-                }
-                //  bottom top
-                maxValue=trees[trees.length-1][col];
-                treesBinary[trees.length-1][col]=1;
-                for(let rowNum=trees.length-1;rowNum>0;rowNum--){
-                  
-                    if (maxValue<trees[rowNum][col]){
-                    
-                        maxValue=Math.max(maxValue,trees[rowNum][col]);
-                        treesBinary[rowNum][col]=1;
-                    }
-                }
-       
-        } else if (rowParse && !columParse) {
-            // find row value
-            // iterate through all value sin row 
-            let maxValue=0;
-            //  left right
-            for(let colNum=0;colNum<trees.length;colNum++){ 
-                // if (trees[row][colNum] ==3 ) {
-                //     console.log("MaxValue: "+ maxValue);
-                //     console.log("Value: "+ trees[row][colNum]);
-                //     console.log("Binary: " + treesBinary[row][colNum]);
-                //     console.log("-----------");
-                // }
-                if (treesBinary[row][colNum] == 0 && maxValue<trees[row][colNum]){
-                   
-                    maxValue=Math.max(maxValue,trees[row][colNum]);
-                    treesBinary[row][colNum]=1;
-                }else if (colNum == 0){
-                    treesBinary[row][colNum]=1;
-                    maxValue=trees[row][colNum];
-                }
-            }
-            //  right left
-            maxValue=trees[trees.length-1][col];
-            treesBinary[trees.length-1][col]=1;
-            for(let colNum=trees.length-1;colNum>0;colNum--){       
-                if (treesBinary[row][colNum] == 0 && maxValue<trees[row][colNum]){
-                   
-
-                    maxValue=Math.max(maxValue,trees[row][colNum]);
-                    treesBinary[row][colNum]=1;
-                } else if (colNum == trees.length-1){
-                    treesBinary[row][colNum]=1;
-                    maxValue=trees[row][colNum];
-                }
-            }
-       
-        } 
-      
-    } 
-  //  console.log("Reached here " );
-   
+function iterateThroughMap(trees,row,col){
+    if (row ==0 || col == 0 || row == trees.length-1 || col == trees[0].length -1){return 0;}
+    let up = findDirectionUp(trees,row,col);
+    let down = findDirectionDown(trees,row,col);
+    let left = findDirectionLeft(trees,row,col);
+    let right = findDirectionRight(trees,row,col);
+    console.log("row col: " + row,col);
+    console.log("up down left right: " + up,down,left,right);
+    console.log("------------------------")
+    return up*down*left*right;
 }
 
 
-
+ 
 fs.readFile('test.txt', 'utf8', function (err,str) {
 
     if (err) {
@@ -116,22 +95,20 @@ fs.readFile('test.txt', 'utf8', function (err,str) {
 
     let answer=0;
 
-
     //Iterate top down left
     for (let rowNum=0;rowNum<trees.length;rowNum++){
+        for (let colNum=0;colNum<trees[0].length;colNum++){
         //console.log("rowNum here: " + trees.length );
-        iterateThroughMap(trees,treesBinary,rowNum,0,false,true);
-    }
-    //Iterate left right top
-    for (let colNum=0;colNum<trees[0].length;colNum++){
-        iterateThroughMap(trees,treesBinary,0,colNum,true,false);
+        let total= iterateThroughMap(trees,rowNum,colNum);
+        treesBinary[rowNum][colNum]=total;
+     }
     }
 
 
     for (const row of treesBinary ){
         for (const col of row ){
-            if (col == 1){
-                answer+=1;
+            if (col> answer) {
+                answer=col;
             }
         }
     }

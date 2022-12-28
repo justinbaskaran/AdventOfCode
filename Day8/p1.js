@@ -139,8 +139,8 @@ fs.readFile('test.txt', 'utf8', function (err,str) {
 
 
         
-    //console.log(trees);
-    //console.log(treesBinary);
+console.log(trees);
+    console.log(treesBinary);
 
     console.log("Answer Part1: " + answer);
 
